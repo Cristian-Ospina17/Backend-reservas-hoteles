@@ -96,3 +96,11 @@ Aplicar conceptos de:
 * Patrones de diseño
 * Control de versiones con Git
 * Trabajo colaborativo
+
+# StayEase - Sistema de Reservas de Hoteles
+
+## Descripción
+
+StayEase es un frontend de reservas de hoteles creado con HTML, CSS y JavaScript moderno. Ofrece búsqueda de hoteles, visualización de detalles, gestión de reservas y autenticación de usuarios.
+
+## Características principales

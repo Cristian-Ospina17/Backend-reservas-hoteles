@@ -3,56 +3,69 @@ package com.hotelapp.hotelbackend.service.impl;
 import com.hotelapp.hotelbackend.model.Usuario;
 import com.hotelapp.hotelbackend.repository.UsuarioRepository;
 import com.hotelapp.hotelbackend.service.UsuarioService;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
-    private final UsuarioRepository repository;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository repository) {
-        this.repository = repository;
-    }
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository,
+                              PasswordEncoder passwordEncoder) {
 
-    @Override
-    public Usuario crearUsuario(Usuario usuario) {
-
-        if (usuario.getNombre() == null || usuario.getNombre().isEmpty()) {
-            throw new RuntimeException("Nombre requerido");
-        }
-
-        if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
-            throw new RuntimeException("Email requerido");
-        }
-
-        return repository.guardar(usuario);
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public List<Usuario> listar() {
-        return repository.listar();
+        return usuarioRepository.findAll();
     }
 
     @Override
-    public Usuario buscar(Long id) {
-        Usuario usuario = repository.buscarPorId(id);
+    public Optional<Usuario> buscarPorId(Long id) {
+        return usuarioRepository.findById(id);
+    }
 
-        if (usuario == null) {
-            throw new RuntimeException("Usuario no encontrado");
-        }
+    @Override
+    public Usuario guardar(Usuario usuario) {
 
-        return usuario;
+        usuario.setPassword(
+                passwordEncoder.encode(usuario.getPassword())
+        );
+
+        return usuarioRepository.save(usuario);
     }
 
     @Override
     public Usuario actualizar(Long id, Usuario usuario) {
-        return repository.actualizar(id, usuario);
+
+        Usuario existente = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        existente.setNombre(usuario.getNombre());
+        existente.setEmail(usuario.getEmail());
+
+        existente.setPassword(
+                passwordEncoder.encode(usuario.getPassword())
+        );
+
+        return usuarioRepository.save(existente);
     }
 
     @Override
     public void eliminar(Long id) {
-        repository.eliminar(id);
+        usuarioRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Usuario> buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
 }

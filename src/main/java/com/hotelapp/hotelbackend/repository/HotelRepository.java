@@ -1,19 +1,10 @@
 package com.hotelapp.hotelbackend.repository;
 
 import com.hotelapp.hotelbackend.model.Hotel;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-public interface HotelRepository {
+public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
-    Hotel guardar(Hotel hotel);
-
-    List<Hotel> listar();
-
-    Hotel buscarPorId(Long id);
-
-    Hotel actualizar(Long id, Hotel hotel);
-
-    List<Hotel> filtrarPorCiudad(String ciudad);
-
-    void eliminar(Long id);
+    List<Hotel> findByCiudadIgnoreCase(String ciudad);
 }

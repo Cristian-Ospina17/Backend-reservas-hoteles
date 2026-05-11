@@ -1,46 +1,33 @@
-package com.hotelapp.hotelbackend.model;
+// HotelDetalleDTO.java
+package com.hotelapp.hotelbackend.dto;
 
-import jakarta.persistence.*;
+import com.hotelapp.hotelbackend.model.Habitacion;
+
 import java.util.List;
 
-@Entity
-@Table(name = "hoteles")
-public class Hotel {
+public class HotelDetalleDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nombre;
     private String ciudad;
     private double precioPorNoche;
     private String categoria;
 
     private String imagen;
-
-    @Column(length = 2000)
     private String descripcion;
 
-    private Integer cantidadHabitaciones;
-
-    private Integer banos;
-
-    private Integer personasMax;
-
-    @ElementCollection
-    @CollectionTable(
-            name = "hotel_caracteristicas",
-            joinColumns = @JoinColumn(name = "hotel_id")
-    )
-    @Column(name = "caracteristica")
     private List<String> caracteristicas;
 
-    // CONSTRUCTOR VACÍO
-    public Hotel() {
+    private Integer cantidadHabitaciones;
+    private Integer banos;
+    private Integer personasMax;
+
+    private List<Habitacion> habitaciones;
+
+    public HotelDetalleDTO() {
     }
 
-    // CONSTRUCTOR
-    public Hotel(
+    public HotelDetalleDTO(
             Long id,
             String nombre,
             String ciudad,
@@ -48,22 +35,29 @@ public class Hotel {
             String categoria,
             String imagen,
             String descripcion,
+            List<String> caracteristicas,
             Integer cantidadHabitaciones,
             Integer banos,
             Integer personasMax,
-            List<String> caracteristicas
+            List<Habitacion> habitaciones
     ) {
+
         this.id = id;
         this.nombre = nombre;
         this.ciudad = ciudad;
         this.precioPorNoche = precioPorNoche;
         this.categoria = categoria;
+
         this.imagen = imagen;
         this.descripcion = descripcion;
+
+        this.caracteristicas = caracteristicas;
+
         this.cantidadHabitaciones = cantidadHabitaciones;
         this.banos = banos;
         this.personasMax = personasMax;
-        this.caracteristicas = caracteristicas;
+
+        this.habitaciones = habitaciones;
     }
 
     // GETTERS
@@ -96,6 +90,10 @@ public class Hotel {
         return descripcion;
     }
 
+    public List<String> getCaracteristicas() {
+        return caracteristicas;
+    }
+
     public Integer getCantidadHabitaciones() {
         return cantidadHabitaciones;
     }
@@ -108,8 +106,8 @@ public class Hotel {
         return personasMax;
     }
 
-    public List<String> getCaracteristicas() {
-        return caracteristicas;
+    public List<Habitacion> getHabitaciones() {
+        return habitaciones;
     }
 
     // SETTERS
@@ -142,6 +140,10 @@ public class Hotel {
         this.descripcion = descripcion;
     }
 
+    public void setCaracteristicas(List<String> caracteristicas) {
+        this.caracteristicas = caracteristicas;
+    }
+
     public void setCantidadHabitaciones(Integer cantidadHabitaciones) {
         this.cantidadHabitaciones = cantidadHabitaciones;
     }
@@ -154,7 +156,7 @@ public class Hotel {
         this.personasMax = personasMax;
     }
 
-    public void setCaracteristicas(List<String> caracteristicas) {
-        this.caracteristicas = caracteristicas;
+    public void setHabitaciones(List<Habitacion> habitaciones) {
+        this.habitaciones = habitaciones;
     }
 }

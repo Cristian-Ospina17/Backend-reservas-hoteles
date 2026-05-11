@@ -31,37 +31,52 @@ public class HotelServiceImpl implements HotelService {
             throw new RuntimeException("El precio por noche debe ser mayor a 0");
         }
 
-        return repository.guardar(hotel);
+        return repository.save(hotel);
     }
 
     @Override
     public List<Hotel> listar() {
-        return repository.listar();
+        return repository.findAll();
     }
 
     @Override
     public Hotel buscar(Long id) {
-        Hotel hotel = repository.buscarPorId(id);
-
-        if (hotel == null) {
-            throw new RuntimeException("Hotel no encontrado");
-        }
-
-        return hotel;
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Hotel no encontrado"));
     }
 
     @Override
     public Hotel actualizar(Long id, Hotel hotel) {
-        return repository.actualizar(id, hotel);
+
+        Hotel existente = buscar(id);
+
+        existente.setNombre(hotel.getNombre());
+        existente.setCiudad(hotel.getCiudad());
+        existente.setPrecioPorNoche(hotel.getPrecioPorNoche());
+        existente.setCategoria(hotel.getCategoria());
+
+        existente.setImagen(hotel.getImagen());
+        existente.setDescripcion(hotel.getDescripcion());
+
+        existente.setCantidadHabitaciones(hotel.getCantidadHabitaciones());
+        existente.setBanos(hotel.getBanos());
+        existente.setPersonasMax(hotel.getPersonasMax());
+
+        existente.setCaracteristicas(hotel.getCaracteristicas());
+
+        return repository.save(existente);
     }
 
     @Override
     public List<Hotel> filtrarPorCiudad(String ciudad) {
-        return repository.filtrarPorCiudad(ciudad);
+        return repository.findByCiudadIgnoreCase(ciudad);
     }
 
     @Override
     public void eliminar(Long id) {
-        repository.eliminar(id);
+
+        Hotel hotel = buscar(id);
+
+        repository.delete(hotel);
     }
 }

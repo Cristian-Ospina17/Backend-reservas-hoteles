@@ -1,21 +1,17 @@
 package com.hotelapp.hotelbackend.repository;
 
 import com.hotelapp.hotelbackend.model.Reserva;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.LocalDate;
 import java.util.List;
 
-public interface ReservaRepository {
+public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
-    Reserva guardar(Reserva reserva);
+    List<Reserva> findByEstadoIgnoreCase(String estado);
 
-    List<Reserva> listar();
-
-    Reserva buscarPorId(Long id);
-
-    Reserva actualizar(Long id, Reserva reserva);
-
-    List<Reserva> filtrarPorEstado(String estado);
-
-    void cambiarEstado(Long id, String estado);
-
-    void eliminar(Long id);
+    List<Reserva> findByHotelIgnoreCaseAndEstadoIgnoreCase(
+            String hotel,
+            String estado
+    );
 }

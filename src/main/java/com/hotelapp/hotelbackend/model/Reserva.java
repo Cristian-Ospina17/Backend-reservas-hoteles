@@ -1,15 +1,21 @@
 package com.hotelapp.hotelbackend.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "reservas")
 public class Reserva {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nombreUsuario;
     private String hotel;
     private LocalDate fechaEntrada;
     private LocalDate fechaSalida;
-    private String estado; // ACTIVA o CANCELADA
+    private String estado;
 
     public Reserva() {}
 
@@ -24,32 +30,16 @@ public class Reserva {
     }
 
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
     public String getNombreUsuario() { return nombreUsuario; }
-    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
-
     public String getHotel() { return hotel; }
-    public void setHotel(String hotel) { this.hotel = hotel; }
-
     public LocalDate getFechaEntrada() { return fechaEntrada; }
-    public void setFechaEntrada(LocalDate fechaEntrada) { this.fechaEntrada = fechaEntrada; }
-
     public LocalDate getFechaSalida() { return fechaSalida; }
-    public void setFechaSalida(LocalDate fechaSalida) { this.fechaSalida = fechaSalida; }
-
     public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
 
-    @Override
-    public String toString() {
-        return "Reserva{" +
-                "id=" + id +
-                ", nombreUsuario='" + nombreUsuario + '\'' +
-                ", hotel='" + hotel + '\'' +
-                ", fechaEntrada=" + fechaEntrada +
-                ", fechaSalida=" + fechaSalida +
-                ", estado='" + estado + '\'' +
-                '}';
-    }
+    public void setId(Long id) { this.id = id; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
+    public void setHotel(String hotel) { this.hotel = hotel; }
+    public void setFechaEntrada(LocalDate fechaEntrada) { this.fechaEntrada = fechaEntrada; }
+    public void setFechaSalida(LocalDate fechaSalida) { this.fechaSalida = fechaSalida; }
+    public void setEstado(String estado) { this.estado = estado; }
 }

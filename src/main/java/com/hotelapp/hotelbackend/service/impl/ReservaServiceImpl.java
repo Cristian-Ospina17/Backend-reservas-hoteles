@@ -36,6 +36,26 @@ public class ReservaServiceImpl implements ReservaService {
             throw new RuntimeException("Fechas inválidas");
         }
 
+        List<Reserva> reservasActivasDelHotel =
+                repository.findByHotelIgnoreCaseAndEstadoIgnoreCase(
+                        reserva.getHotel(),
+                        "ACTIVA"
+                );
+
+        for (Reserva existente : reservasActivasDelHotel) {
+
+            boolean fechasSeCruzan =
+                    reserva.getFechaEntrada().isBefore(existente.getFechaSalida())
+                            &&
+                            reserva.getFechaSalida().isAfter(existente.getFechaEntrada());
+
+            if (fechasSeCruzan) {
+                throw new RuntimeException(
+                        "El hotel no está disponible en esas fechas"
+                );
+            }
+        }
+
         Reserva nueva = ReservaFactory.crear(
                 reserva.getNombreUsuario(),
                 reserva.getHotel(),
@@ -43,51 +63,47 @@ public class ReservaServiceImpl implements ReservaService {
                 reserva.getFechaSalida()
         );
 
-        return repository.guardar(nueva);
+        return repository.save(nueva);
     }
 
     @Override
     public List<Reserva> listar() {
-        return repository.listar();
+        return repository.findAll();
     }
 
     @Override
     public Reserva buscar(Long id) {
-        Reserva reserva = repository.buscarPorId(id);
-
-        if (reserva == null) {
-            throw new RuntimeException("Reserva no encontrada");
-        }
-
-        return reserva;
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
     }
 
     @Override
     public Reserva actualizar(Long id, Reserva nueva) {
-        Reserva existente = repository.buscarPorId(id);
+        Reserva existente = buscar(id);
 
-        if (existente == null) {
-            throw new RuntimeException("No existe la reserva");
-        }
+        existente.setNombreUsuario(nueva.getNombreUsuario());
+        existente.setHotel(nueva.getHotel());
+        existente.setFechaEntrada(nueva.getFechaEntrada());
+        existente.setFechaSalida(nueva.getFechaSalida());
 
-        nueva.setEstado(existente.getEstado());
-
-        return repository.actualizar(id, nueva);
+        return repository.save(existente);
     }
 
     @Override
     public List<Reserva> filtrarPorEstado(String estado) {
-        return repository.filtrarPorEstado(estado);
+        return repository.findByEstadoIgnoreCase(estado);
     }
 
     @Override
     public Reserva cancelar(Long id) {
-        repository.cambiarEstado(id, "CANCELADA");
-        return repository.buscarPorId(id);
+        Reserva reserva = buscar(id);
+        reserva.setEstado("CANCELADA");
+        return repository.save(reserva);
     }
 
     @Override
     public void eliminar(Long id) {
-        repository.eliminar(id);
+        Reserva reserva = buscar(id);
+        repository.delete(reserva);
     }
 }
